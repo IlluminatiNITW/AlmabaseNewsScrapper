@@ -23,6 +23,9 @@ class YourStorySpider(SitemapSpider):
     name = 'yourstory'
     count = 0
     sitemap_urls = ['http://yourstory.com/sitemap_index.xml']
+    sitemap_rules = [
+        ('/2016/01','parse')
+    ]
 
     def parse(self, response):
         # print "HIT: ", response.url
