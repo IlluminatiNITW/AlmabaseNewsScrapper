@@ -14,6 +14,29 @@ django.setup()
 
 from Classifer.models import *
 
+def get_all_named(t):
+    l = []
+    if hasattr(t, 'node') and t.node:
+        if t.node == 'NE':
+            l.append(" ".join([child[0] for child in t]))
+        else:
+            for child in t:
+                l.extend(get_all_named(child))
+    return l
+
+def get_named_entities(article_text):
+    sentences = nltk.sent_tokenize(article_text)
+    print len(sentences)
+    named_list = set()
+    for sent in sentences:
+        words = nltk.word_tokenize(sent)
+        tagged = nltk.pos_tag(words)
+        namedent = nltk.ne_chunk(tagged, binary = True)
+        named = get_all_named(namedent)
+        for name in named:
+            named_list.add(name)
+    return named_list
+
 def add_article(title,summary,url,author,keywords1):
     a=Article.objects.get_or_create(title=title,summary=summary,url=url,author=author)[0]
     a.save()
@@ -36,6 +59,7 @@ def test_keywords(article,newClassifier):
     print keys
     l=[k.keyword for k in keys.keywords.all()]
     test_string=" ".join(l)
+    print test_string
     classification = newsClassifier.classify(test_string)
     print classification
 
@@ -44,7 +68,7 @@ def testurl(url,newsClassifier):
     a.download()
     a.parse()
     a.nlp()
-    l1=a.keywords
+    l1= a.keywords + get_named_entities(a.text)
     author="default"
     try:
         author=a.author[0]
@@ -65,7 +89,7 @@ def article_keywords(article):
 
 if __name__ == '__main__':
     print "Starting testing of Bayes Classifer"
-    labeled_articles = [(a, a.relevant) for a in Article.objects.all()[:(len(Article.objects.all())-1)]]
+    labeled_articles = [(a, a.relevant) for a in Article.objects.all()[:(len(Article.objects.all()))]]
     print labeled_articles
     featuresets=[]
     for (article, relevant) in labeled_articles:
@@ -78,10 +102,9 @@ if __name__ == '__main__':
     for f in train_set:
         newsTrainer.train(f[0]['keyword'],f[1])
     newsClassifier = Classifier(newsTrainer.data, tokenizer)
-    article=Article.objects.all()[(len(Article.objects.all())-1):]
-    test_keywords(article[0],newsClassifier)
     url=raw_input("Enter the url: ")
     testurl(url,newsClassifier)
+
 
 
 
