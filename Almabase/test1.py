@@ -35,7 +35,7 @@ def get_named_entities(article_text):
         named = get_all_named(namedent)
         for name in named:
             named_list.add(name)
-    return named_list
+    return list(named_list)
 
 def add_article(title,summary,url,author,keywords1):
     a=Article.objects.get_or_create(title=title,summary=summary,url=url,author=author)[0]
