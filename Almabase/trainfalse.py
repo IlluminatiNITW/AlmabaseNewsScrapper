@@ -4,8 +4,33 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Almabase.settings')
 import django
 import newspaper
 import unicodedata
+import nltk
 
 django.setup()
+
+
+def get_all_named(t):
+    l = []
+    if hasattr(t, 'node') and t.node:
+        if t.node == 'NE':
+            l.append(" ".join([child[0] for child in t]))
+        else:
+            for child in t:
+                l.extend(get_all_named(child))
+    return l
+
+def get_named_entities(article_text):
+    sentences = nltk.sent_tokenize(article_text)
+    print len(sentences)
+    named_list = set()
+    for sent in sentences:
+        words = nltk.word_tokenize(sent)
+        tagged = nltk.pos_tag(words)
+        namedent = nltk.ne_chunk(tagged, binary = True)
+        named = get_all_named(namedent)
+        for name in named:
+            named_list.add(name)
+    return list(named_list)
 
 
 def getkeywords(filename):
@@ -44,7 +69,7 @@ def train(urls,keywords):
 		a.download()
 		a.parse()
 		a.nlp()
-		l1=a.keywords
+		l1=get_named_entities(a.text)
 		add_article(a.title,a.summary,url,a.authors[0],l1)
 	return keywords
 
