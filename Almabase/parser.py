@@ -13,27 +13,28 @@ from naiveBayesClassifier.classifier import Classifier
 
 
 django.setup()
-
+from Classifer.models import *
 
 
 
 class Parser_Classifier(threading.Thread):
-    def __init__(self, response_body, classifier):
+    def __init__(self, url, response_body, classifier):
         threading.Thread.__init__(self)
         self.response_body = response_body
         self.classifier = classifier
+        self.url = url
 
-    def get_all_named(t):
+    def get_all_named(self, t):
         l = []
         if hasattr(t, 'node') and t.node:
             if t.node == 'NE':
                 l.append(" ".join([child[0] for child in t]))
             else:
                 for child in t:
-                    l.extend(get_all_named(child))
+                    l.extend(self.get_all_named(child))
         return l
 
-    def get_named_entities(article_text):
+    def get_named_entities(self, article_text):
         sentences = nltk.sent_tokenize(article_text)
         print len(sentences)
         named_list = set()
@@ -41,12 +42,12 @@ class Parser_Classifier(threading.Thread):
             words = nltk.word_tokenize(sent)
             tagged = nltk.pos_tag(words)
             namedent = nltk.ne_chunk(tagged, binary = True)
-            named = get_all_named(namedent)
+            named = self.get_all_named(namedent)
             for name in named:
                 named_list.add(name)
         return list(named_list)
 
-    def add_article(title,summary,url,author,keywords1):
+    def add_article(self, title,summary,url,author,keywords1):
         a=Article.objects.get_or_create(title=title,summary=summary,url=url,author=author)[0]
         a.save()
         article=a
@@ -63,7 +64,7 @@ class Parser_Classifier(threading.Thread):
         return article
 
 
-    def classify(article,newClassifier):
+    def classify(self, article,newsClassifier):
         keys=Keywords.objects.get(article=article)
         print keys
         l=[k.keyword for k in keys.keywords.all()]
@@ -72,20 +73,31 @@ class Parser_Classifier(threading.Thread):
         classification = newsClassifier.classify(test_string)
         print classification
         print type(classification)
+        t=0
+        maxprob= None
+        for _class in classification:
+            if _class[1]>=t:
+                maxprob=_class[0]
+                t=_class[1]
 
-    def parse_add(response_body):
+        article.relevant = maxprob
+        article.save()
+
+
+    def parse_add(self, url, response_body):
         a=newspaper.Article("")
         a.is_downloaded = True
+        a.html = response_body
         a.parse()
         a.nlp()
 
-        l1= get_named_entities(a.text)
+        l1= self.get_named_entities(a.text)
         author="default"
         try:
             author=a.author[0]
         except:
             print "Not found"
-        art=add_article(a.title,a.summary,url,author,l1)
+        art=self.add_article(a.title,a.summary,url,author,l1)
         # test_keywords(art,newsClassifier)
         return art
 
@@ -110,5 +122,5 @@ class Parser_Classifier(threading.Thread):
         # newsClassifier = Classifier(newsTrainer.data, tokenizer)
         # url=raw_input("Enter the url: ")
 
-        added_article = parse_add(self.response_body)
-        classify(added_article, self.classifier)
+        added_article = self.parse_add(self.url, self.response_body)
+        self.classify(added_article, self.classifier)

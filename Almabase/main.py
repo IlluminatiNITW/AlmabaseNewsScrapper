@@ -41,7 +41,8 @@ def build_classifier():
 if __name__ == '__main__':
     classifier = build_classifier()
     print "BUilt classifier"
-    r = requests.get("http://social.yourstory.com/2013/09/how-nit-warangal-lakshya-foundation-bridged-gap-alumni-and-students/")
+    url = "http://yourstory.com/2016/01/raja-nayak-dalit-school-dropout-to-millionaire/"
+    r = requests.get(url)
     print r.status_code
-	# sample_thread = Parser_Classifier(r.content, classifier)
-	# sample_thread.start()
+    sample_thread = Parser_Classifier(url,r.content, classifier)
+    sample_thread.start()
