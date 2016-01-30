@@ -5,6 +5,10 @@ import django
 import newspaper
 import unicodedata
 import nltk
+from naiveBayesClassifier import tokenizer
+from naiveBayesClassifier.trainer import Trainer
+from naiveBayesClassifier.classifier import Classifier
+
 
 django.setup()
 
@@ -13,6 +17,7 @@ from Classifer.models import *
 def add_article(title,summary,url,author,keywords1):
     a=Article.objects.get_or_create(title=title,summary=summary,url=url,author=author)[0]
     a.save()
+    article=a
     articleid=a.id
     a=Keywords.objects.get_or_create(article=a)[0]
     print a
@@ -23,40 +28,40 @@ def add_article(title,summary,url,author,keywords1):
         if not k.keywords_set.filter(id=a.id):
             a.keywords.add(k)
             a.save()
-    return articleid
+    return article
 
 
-def test_keywords(article,classifier):
+def test_keywords(article,newClassifier):
     keys=Keywords.objects.get(article=article)
     print keys
     l=[k.keyword for k in keys.keywords.all()]
-    test_set=[]
-    keyset=[]
-    for k in l:
-        print k
-        print classifier.prob_classify({'keyword':k}).logprob('keyword')
-        test_set.append(({'keyword':k},classifier.classify({'keyword':k})))
-    print nltk.classify.accuracy(classifier, test_set)
+    test_string=" ".join(l)
+    classification = newsClassifier.classify(test_string)
+    print classification
 
-def testurl(url):
+def testurl(url,newsClassifier):
     a=newspaper.Article(url)
     a.download()
     a.parse()
     a.nlp()
     l1=a.keywords
-    articleid=add_article(a.title,a.summary,url,a.authors[0],l1)
-    art=Article.objects.get(id=articleid)
+    author="default"
+    try:
+        author=a.author[0]
+    except:
+        print "Not found"
+    art=add_article(a.title,a.summary,url,author,l1)
+    test_keywords(art,newsClassifier)
+
 
 
 def article_keywords(article):
-	keys=Keywords.objects.get(article=article)
-	print keys
-	l=[k.keyword for k in keys.keywords.all()]
-	keyset=[]
-	for k in l:
-		keyset.append({'keyword':k})
-	return keyset
-
+    keys=Keywords.objects.get(article=article)
+    print keys
+    l=[k.keyword for k in keys.keywords.all()]
+    print " ".join(l)
+    keyset={'keyword':" ".join(l)}
+    return keyset
 
 if __name__ == '__main__':
     print "Starting testing of Bayes Classifer"
@@ -65,13 +70,18 @@ if __name__ == '__main__':
     featuresets=[]
     for (article, relevant) in labeled_articles:
     	r=article_keywords(article)
-    	for keys in r:
-    		featuresets.append((keys,relevant))
+    	featuresets.append((r,relevant))
     print featuresets
     train_set, test_set = featuresets[:(len(featuresets))], featuresets[(len(featuresets)-2):]
     print train_set
-    classifier = nltk.NaiveBayesClassifier.train(train_set)
-    article=Article.objects.all()[(len(Article.objects.all())-2):]
-    test_keywords(article[0],classifier)
+    newsTrainer = Trainer(tokenizer)
+    for f in train_set:
+        newsTrainer.train(f[0]['keyword'],f[1])
+    newsClassifier = Classifier(newsTrainer.data, tokenizer)
+    article=Article.objects.all()[(len(Article.objects.all())-1):]
+    test_keywords(article[0],newsClassifier)
+    url=raw_input("Enter the url: ")
+    testurl(url,newsClassifier)
+
 
 
