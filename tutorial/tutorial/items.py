@@ -12,4 +12,9 @@ class TutorialItem(scrapy.Item):
 	title=scrapy.Field()
 	link=scrapy.Field()
 	desc=scrapy.Field()
-    pass
+	pass
+
+
+class HyderabadItem(scrapy.Item):
+	link = scrapy.Field()
+	pass
