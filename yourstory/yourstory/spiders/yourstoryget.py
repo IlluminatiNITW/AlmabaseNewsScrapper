@@ -7,12 +7,14 @@ from scrapy.exceptions import CloseSpider
 from scrapy.http import Request
 from yourstory.items import StackItem
 
-URL = "http://www.yourstory.com/2016/page/%d"
+URL = "http://www.yourstory.com/2015/page/%d"
 
-class YourstorygetSpider(scrapy.Spider):
+class YourstorygetSpider(BaseSpider):
     name = "yourstoryget"
-    allowed_domains = ["http://yourstory.com"]
-    start_urls = [URL % 1]
+    allowed_domains = ["yourstory.com"]
+    start_urls =[
+        'http://www.yourstory.com/2015/page/1',
+    ]
 
     def __init__(self):
         self.page_number = 1
@@ -22,6 +24,8 @@ class YourstorygetSpider(scrapy.Spider):
         print "----------"
 
         questions = Selector(response).xpath('//li[@class="grid-full mb-30"]')
+        if not questions:
+            raise CloseSpider('No more pages')
         
         for question in questions:
             item = StackItem()
@@ -33,5 +37,6 @@ class YourstorygetSpider(scrapy.Spider):
                 'a[@class="block"]/@href').extract()[0]
             yield item
 
-        self.page_number += 1
+        self.page_number +=1
+        print self.page_number
         yield Request(URL % self.page_number)
