@@ -68,7 +68,7 @@ def testurl(url,newsClassifier):
     a.download()
     a.parse()
     a.nlp()
-    l1= a.keywords + get_named_entities(a.text)
+    l1= get_named_entities(a.text)
     author="default"
     try:
         author=a.author[0]
