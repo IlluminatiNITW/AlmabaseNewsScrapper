@@ -13,7 +13,7 @@ class Article(models.Model):
 	college=models.CharField(max_length=300,default="NITW")
 	relevant=models.BooleanField(default=True)
 	addedat=models.DateTimeField(auto_now=True)
-	image_link = models.CharField(default = "http://menengage.org/wp-content/uploads/2013/11/news-default.png")
+	image_link = models.CharField(max_length=300,default = "http://menengage.org/wp-content/uploads/2013/11/news-default.png")
 
 	def __unicode__(self):
 		return self.title
