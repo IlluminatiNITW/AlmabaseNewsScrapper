@@ -10,6 +10,21 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link href="{% static 'css/materialize.css' %}" type="text/css" rel="stylesheet" media="screen,projection"/>
   {# <link href="{% static 'css/style.css' %}" type="text/css" rel="stylesheet" media="screen,projection"/> #}
+  <!-- CORE CSS-->
+  
+  <link href="{% static 'css/materialize.css' %}" type="text/css" rel="stylesheet" media="screen,projection">
+  <link href="{% static 'css/style.css' %}" type="text/css" rel="stylesheet" media="screen,projection">
+  <!-- Custome CSS-->    
+  <link href="{% static 'css/custom-style.css' %}" type="text/css" rel="stylesheet" media="screen,projection">
+
+
+  <!-- INCLUDED PLUGIN CSS ON THIS PAGE -->
+  <link href="{% static 'css/prism.css' %}" type="text/css" rel="stylesheet" media="screen,projection">
+  <link href="{% static 'js/plugins/perfect-scrollbar/perfect-scrollbar.css' %}" type="text/css" rel="stylesheet" media="screen,projection">
+  <link href="{% static 'js/plugins/chartist-js/chartist.min.css' %}" type="text/css" rel="stylesheet" media="screen,projection">
+
+
+
 </head>
 <body>
   <nav class="light-blue lighten-1" role="navigation">
@@ -30,65 +45,112 @@
       <h1 class="header center orange-text">Search college</h1>
       <div class="row center">
         <h5 class="header col s12 light">AN ALL-IN-ONE ALUMNI 
-ENGAGEMENT TOOL</h5>
+          ENGAGEMENT TOOL</h5>
+        </div>
+        <div class="row center">
+          <a href="/index/showcollege/" id="download-button" class="btn-large waves-effect waves-light orange">Get Started</a>
+        </div>
+        <br><br>
+        <hr>
       </div>
-      <div class="row center">
-        <a href="/index/showcollege/" id="download-button" class="btn-large waves-effect waves-light orange">Get Started</a>
+    </div>
+
+
+    <div class="container">
+      <div class="section">
+
+        <!--   Icon Section   -->
+        <div class="row">
+          <div class="col s12 m4">
+            <div class="icon-block">
+              <h2 class="center light-blue-text"><i class="material-icons">flash_on</i></h2>
+              <h5 class="center">Always stay up-to-date</h5>
+
+              <p class="light">No more painful database updations. Your alumni info is constantly updated with data from social accounts.</p>
+            </div>
+          </div>
+
+          <div class="col s12 m4">
+            <div class="icon-block">
+              <h2 class="center light-blue-text"><i class="material-icons">group</i></h2>
+              <h5 class="center">Power to do much more</h5>
+
+              <p class="light">Manage your fundraising campaigns, events, targeted email communications, careers and many others.</p>
+            </div>
+          </div>
+
+          <div class="col s12 m4">
+            <div class="icon-block">
+              <h2 class="center light-blue-text"><i class="material-icons">settings</i></h2>
+              <h5 class="center">Build relationships</h5>
+
+              <p class="light">Leave the technicalities to us and utilise your time on what matters - your alumni. We have you covered!</p>
+            </div>
+          </div>
+        </div>
+
       </div>
       <br><br>
 
+      <div class="section">
+
+      </div>
     </div>
-  </div>
-
-
-  <div class="container">
-    <div class="section">
-
-      <!--   Icon Section   -->
-      <div class="row">
-        <div class="col s12 m4">
-          <div class="icon-block">
-            <h2 class="center light-blue-text"><i class="material-icons">flash_on</i></h2>
-            <h5 class="center">Always stay up-to-date</h5>
-
-            <p class="light">No more painful database updations. Your alumni info is constantly updated with data from social accounts.</p>
-          </div>
+    <hr>
+    <section id="content">
+      <div id="breadcrumbs-wrapper" class=" grey lighten-3">
+        <!-- Search for small screen -->
+        <div class="header-search-wrapper grey hide-on-large-only">
+          <i class="mdi-action-search active"></i>
+          <input type="text" name="Search" class="header-search-input z-depth-2" placeholder="Explore Materialize">
         </div>
-
-        <div class="col s12 m4">
-          <div class="icon-block">
-            <h2 class="center light-blue-text"><i class="material-icons">group</i></h2>
-            <h5 class="center">Power to do much more</h5>
-
-            <p class="light">Manage your fundraising campaigns, events, targeted email communications, careers and many others.</p>
-          </div>
-        </div>
-
-        <div class="col s12 m4">
-          <div class="icon-block">
-            <h2 class="center light-blue-text"><i class="material-icons">settings</i></h2>
-            <h5 class="center">Build relationships</h5>
-
-            <p class="light">Leave the technicalities to us and utilise your time on what matters - your alumni. We have you covered!</p>
+        <div class="container">
+          <div class="row">
+            <div class="col s12 m12 l12">
+              <h5 class="breadcrumbs-title">Cards</h5>
+              <ol class="breadcrumb">
+                <li><a href="index.html">Dashboard</a>
+                </li>
+                <li><a href="ui-cards.html#">UI Elements</a>
+                </li>
+                <li class="active">Cards</li>
+              </ol>
+            </div>
           </div>
         </div>
       </div>
+      <h2>Date:</h2>
+      <div class="row section">
+        <div class="col s12 m6 l6">
+          <div class="card medium">
+            <div class="card-image">
+              <img src="http://almabase.com/media/updates/Roosevelt_High_school.png" alt="sample">
+              <span class="card-title">Card Title</span>
+            </div>
+            <div class="card-content">
+              <p>I am a very simple card. I am good at containing small bits of information. I am convenient because I require little markup to use effectively.</p>
+            </div>
+            <div class="card-action">
+              <a href="ui-cards.html#">This is a link</a>
+              <a href="ui-cards.html#">This is a link</a>
+            </div>
+          </div>
+        </div>
 
-    </div>
-    <br><br>
-
-    <div class="section">
-
-    </div>
-  </div>
-
-  
 
 
-  <!--  Scripts-->
-  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-  <script src="{% static 'js/materialize.js'%}"></script>
-  <!--<script src="{% static 'js/init.js' %}"></script>-->
 
-  </body>
-</html>
+        <!--  Scripts-->
+        <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script src="{% static 'js/materialize.js'%}"></script>
+        <!--<script src="{% static 'js/init.js' %}"></script>-->
+        <!--prism-->
+        <script type="text/javascript" src="{% static 'js/prism.js'%}"></script>
+        <!--scrollbar-->
+        <script type="text/javascript" src="{% static 'js/plugins/perfect-scrollbar/perfect-scrollbar.min.js'%}"></script>  
+
+        <!--plugins.js - Some Specific JS codes for Plugin Settings-->
+        <script type="text/javascript" src="{% static 'js/plugins.js'%}"></script>
+
+      </body>
+      </html>
