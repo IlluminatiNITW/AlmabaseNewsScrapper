@@ -6,21 +6,33 @@ import newspaper
 with open('foo.txt') as r:
     content = r.readlines()
 
+from multiprocessing.connection import Listener
+from array import array
+import requests
+
+
+
 class DmozSpider(scrapy.Spider):
     name = "htmlget"
     start_urls=[]
     def __init__(self):
-        for currentline in content:
-            currentline=currentline.split('#')
-            # self.allowed_domains.append(newspaper.urls.get_domain(currentline[2]))
-            self.start_urls.append(currentline[2])
-            # print self.allowed_domains
-            print self.start_urls
+        super(DmozSpider, self).__init__()
+        address = ('localhost', 7002)     # family is deduced to be 'AF_INET'
+        listener = Listener(address, authkey='secret password')
+        self.conn = listener.accept()
+        print "STarting server XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+        print 'connection accepted from', listener.last_accepted
+        for currentline in lines:
+            currentline=currentline.split(',')
+            self.allowed_domains.append(currentline[0])
+            self.start_urls.append(currentline[1])
     def parse(self, response):
         # print self.allowed_domains
         print self.start_urls
-        filename = response.url.split("/")[-2] + '.html'
-        #filename = response.url + '.html'
-        with open(filename, 'wb') as f:
-            f.write(response.body)
-            f.close()
+
+        r = response
+        # filename = response.url.split("/")[-2] + '.html'
+        self.conn.send([r.url,r.body])
+        # with open(filename, 'wb') as f:
+        #     f.write(response.body)
+        # currentline=r.readline().split(",")

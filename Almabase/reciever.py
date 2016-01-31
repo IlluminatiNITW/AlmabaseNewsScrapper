@@ -43,7 +43,7 @@ def build_classifier():
 
 
 workQueue = Queue()
-address = ('localhost', 7001)
+address = ('localhost', 7002)
 
 class myThread(threading.Thread):
     def __init__(self, threadID, name,q):
@@ -56,7 +56,7 @@ class myThread(threading.Thread):
 		message=""
 		while True:
 			message=conn.recv() 
-			print "received", message[0],message[1]
+			# print "received", message[0],message[1]
 			q.put(message)
 
     def run(self):
@@ -82,7 +82,7 @@ class myThread2(threading.Thread):
                 sample_thread = Parser_Classifier(url,message[1], classifier)
                 sample_thread.start()
                 q.task_done()
-                print "%s processing %s" % (threadName, message)
+                # print "%s processing %s" % (threadName, message)
             time.sleep(1)
 
     def run(self):
