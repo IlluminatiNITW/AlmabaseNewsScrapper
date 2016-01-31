@@ -12,6 +12,7 @@ class Article(models.Model):
 	author=models.CharField(max_length=300)
 	college=models.CharField(max_length=300,default="NITW")
 	relevant=models.BooleanField(default=True)
+	addedat=models.DateTimeField(auto_now=True)
 	def __unicode__(self):
 		return self.title
 
