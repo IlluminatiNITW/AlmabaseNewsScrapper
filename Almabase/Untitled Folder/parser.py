@@ -13,79 +13,45 @@ from naiveBayesClassifier.classifier import Classifier
 
 
 django.setup()
-from Classifer.models import *
+
 
 
 
 class Parser_Classifier(threading.Thread):
-    def __init__(self, url, response_body, classifier):
+    def __init__(self, response_body, classifier):
         threading.Thread.__init__(self)
         self.response_body = response_body
         self.classifier = classifier
-        self.url = url
 
-    def get_all_person(self,t):
-        l = []
-        if hasattr(t, 'node') and t.node:
-            if t.node == 'PERSON':
-                l.append(" ".join([child[0] for child in t]))
-            else:
-                for child in t:
-                    l.extend(self.get_all_person(child))
-        return l
-
-    def get_all_organizations(self,t):
-        l = []
-        if hasattr(t, 'node') and t.node:
-            if t.node == 'ORGANIZATION':
-                l.append(" ".join([child[0] for child in t]))
-            else:
-                for child in t:
-                    l.extend(self.get_all_organizations(child))
-        return l
-
-    def get_all_named(self, t):
+    def get_all_named(t):
         l = []
         if hasattr(t, 'node') and t.node:
             if t.node == 'NE':
                 l.append(" ".join([child[0] for child in t]))
             else:
                 for child in t:
-                    l.extend(self.get_all_named(child))
+                    l.extend(get_all_named(child))
         return l
 
-    def get_named_entities(self, article_text):
+    def get_named_entities(article_text):
         sentences = nltk.sent_tokenize(article_text)
         print len(sentences)
         named_list = set()
-        person_list = set()
-        org_list = set()
         for sent in sentences:
             words = nltk.word_tokenize(sent)
             tagged = nltk.pos_tag(words)
             namedent = nltk.ne_chunk(tagged, binary = True)
-            namedent2 = nltk.ne_chunk(tagged)
-            named = self.get_all_named(namedent)
-            persons = self.get_all_person(namedent2)
-            orgs = self.get_all_organizations(namedent2)
+            named = get_all_named(namedent)
             for name in named:
                 named_list.add(name)
-            for person in persons:
-                person_list.add(person)
-            for org in orgs:
-                org_list.add(org)
+        return list(named_list)
 
-        return list(named_list), list(person_list), org(org_list)
-
-
-    def add_article(self, title,summary,url,author, img_link ,keywords1, persons, orgs):
-        a=Article.objects.get_or_create(title=title,summary=summary,url=url,author=author, img_link = img_link)[0]
+    def add_article(title,summary,url,author,keywords1):
+        a=Article.objects.get_or_create(title=title,summary=summary,url=url,author=author)[0]
         a.save()
         article=a
         articleid=a.id
         a=Keywords.objects.get_or_create(article=a)[0]
-        b=PersonList.objects.get_or_create(article = article)[0]
-        c=OrganizationList.objects.get_or_create(article=article)[0]
         print a
         print a.keywords
         for key in keywords1:
@@ -94,23 +60,10 @@ class Parser_Classifier(threading.Thread):
             if not k.keywords_set.filter(id=a.id):
                 a.keywords.add(k)
                 a.save()
-        for person in persons:
-            k=Person.objects.get_or_create(name=person)[0]
-            k.save()
-            if not k.persons_set.filter(id=b.id):
-                b.keywords.add(k)
-                b.save()
-        for org in orgs:
-            k=Organization.objects.get_or_create(name=org)[0]
-            k.save()
-            if not k.orgs_set.filter(id=c.id):
-                c.keywords.add(k)
-                c.save()
-
         return article
 
 
-    def classify(self, article,newsClassifier):
+    def classify(article,newClassifier):
         keys=Keywords.objects.get(article=article)
         print keys
         l=[k.keyword for k in keys.keywords.all()]
@@ -119,31 +72,20 @@ class Parser_Classifier(threading.Thread):
         classification = newsClassifier.classify(test_string)
         print classification
         print type(classification)
-        t=0
-        maxprob= None
-        for _class in classification:
-            if _class[1]>=t:
-                maxprob=_class[0]
-                t=_class[1]
 
-        article.relevant = maxprob
-        article.save()
-
-
-    def parse_add(self, url, response_body):
+    def parse_add(response_body):
         a=newspaper.Article("")
         a.is_downloaded = True
-        a.html = response_body
         a.parse()
         a.nlp()
-        img_link = a.imgs[0]
-        named, persons, orgs= self.get_named_entities(a.text)
+
+        l1= get_named_entities(a.text)
         author="default"
         try:
             author=a.author[0]
         except:
             print "Not found"
-        art=self.add_article(a.title,a.summary,url,author,img_link, named, persons, orgs)
+        art=add_article(a.title,a.summary,url,author,l1)
         # test_keywords(art,newsClassifier)
         return art
 
@@ -168,5 +110,5 @@ class Parser_Classifier(threading.Thread):
         # newsClassifier = Classifier(newsTrainer.data, tokenizer)
         # url=raw_input("Enter the url: ")
 
-        added_article = self.parse_add(self.url, self.response_body)
-        self.classify(added_article, self.classifier)
+        added_article = parse_add(self.response_body)
+        classify(added_article, self.classifier)
