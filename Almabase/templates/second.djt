@@ -75,11 +75,9 @@
                 <p>{{article.summary}}</p>
                 
               </div>
-                <p>tags:</p>
-                <br>
                 
               <div class="card-action">
-              {%for person in article.organizationlist.orgs.all %}
+              {%for person in article.personlist.persons.all %}
                 <span class=" white-text blue lighten-1 waves-effect waves-light chip">{{person.name}}</span>
               {%endfor%}
                  <br>

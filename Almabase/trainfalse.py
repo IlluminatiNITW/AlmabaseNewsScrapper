@@ -5,6 +5,7 @@ import django
 import newspaper
 import unicodedata
 import nltk
+import alma
 
 django.setup()
 
@@ -115,8 +116,12 @@ def train(url,keywords):
     a.download()
     a.parse()
     a.nlp()
-    img_link = a.imgs[0]
+    img_link = a.top_img
     named, persons, orgs= get_named_entities(a.text)
+    print "alma base search started"
+    persons = [person for person in persons if alma.search(person) > 0]
+    orgs = [org for org in orgs if alma.search(org) > 0]
+    print "alma base search stoped"
     author="default"
     try:
         author=a.author[0]
@@ -133,6 +138,8 @@ def populate():
     print keywords
     keywords=train(url_list[0],keywords)
     keywords=train(url_list[1],keywords)
+    keywords=train(url_list[2],keywords)
+
 	
 
 if __name__ == '__main__':

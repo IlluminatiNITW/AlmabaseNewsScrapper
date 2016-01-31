@@ -58,9 +58,9 @@ def search(search_parameter):
 	# print j
 	results = (j["data"]["results"])
 
-	return "length" ,len(results)
-	for result in results:
-		print result["name"]
+	return len(results)
+	# for result in results:
+	# 	print result["name"]
 
 
 # articles = Article.objects.all()
@@ -71,18 +71,18 @@ def search(search_parameter):
 
 
 
-from newspaper import Article
-import nltk
+# from newspaper import Article
+# import nltk
 
 
-url = 'http://social.yourstory.com/2013/09/how-nit-warangal-lakshya-foundation-bridged-gap-alumni-and-students/'
-article = Article(url)
-article.download()
+# url = 'http://social.yourstory.com/2013/09/how-nit-warangal-lakshya-foundation-bridged-gap-alumni-and-students/'
+# article = Article(url)
+# article.download()
 
-article.parse()
+# article.parse()
 
-l = get_named_entities(article.text)
+# l = get_named_entities(article.text)
 
-search_parameter = " ".join(l)
-for keyword in l:
-	print keyword, search(keyword)
+# search_parameter = " ".join(l)
+# for keyword in l:
+# 	print keyword, search(keyword)

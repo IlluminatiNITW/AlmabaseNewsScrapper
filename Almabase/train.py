@@ -5,6 +5,7 @@ import django
 import newspaper
 import unicodedata
 import nltk
+import alma
 
 django.setup()
 
@@ -110,21 +111,25 @@ def add_article(title,summary,url,author, img_link ,keywords1, persons, orgs):
     return article
 
 def train(url,keywords):
-	# for url in urls:
-	a=newspaper.Article(url)
-	a.download()
-	a.parse()
-	a.nlp()
-	img_link = a.imgs[0]
-	named, persons, orgs= get_named_entities(a.text)
-	author="default"
-	try:
-	    author=a.author[0]
-	except:
-	    print "Not found"
-	art=add_article(a.title,a.summary,url,author,img_link, named, persons, orgs)
-	    # test_keywords(art,newsClassifier)
-	return keywords
+    # for url in urls:
+    a=newspaper.Article(url)
+    a.download()
+    a.parse()
+    a.nlp()
+    img_link = a.top_img
+    named, persons, orgs= get_named_entities(a.text)
+    print "alma base search started"
+    persons = [person for person in persons if alma.search(person) > 0]
+    orgs = [org for org in orgs if alma.search(org) > 0]
+    print "alma base search ended"
+    author="default"
+    try:
+        author=a.author[0]
+    except:
+        print "Not found"
+    art=add_article(a.title,a.summary,url,author,img_link, named, persons, orgs)
+        # test_keywords(art,newsClassifier)
+    return keywords
 
 def populate():
 	print "Training the classifier....adding keywords"
@@ -133,7 +138,7 @@ def populate():
 	print keywords
 	keywords=train(url_list[0],keywords)
 	keywords=train(url_list[1],keywords)
-	# keywords=train(url_list[2],keywords)
+	keywords=train(url_list[2],keywords)
 
 	
 

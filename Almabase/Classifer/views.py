@@ -9,7 +9,9 @@ def homeview(request):
 
 
 def showcollege(request):
-	articles=Article.objects.all()
+	articles=Article.objects.filter(relevant = True)
+	for article in articles:
+		article.summary = article.summary[:150]+"..."
 	print articles
 	response={}
 	response['articles']=articles

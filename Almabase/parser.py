@@ -11,6 +11,7 @@ from naiveBayesClassifier import tokenizer
 from naiveBayesClassifier.trainer import Trainer
 from naiveBayesClassifier.classifier import Classifier
 
+import alma
 
 django.setup()
 from Classifer.models import *
@@ -136,8 +137,12 @@ class Parser_Classifier(threading.Thread):
         a.html = response_body
         a.parse()
         a.nlp()
-        img_link = a.imgs[0]
+        img_link = a.top_img
         named, persons, orgs= self.get_named_entities(a.text)
+        print "alma base search started"
+        persons = [person for person in persons if alma.search(person) > 0]
+        orgs = [org for org in orgs if alma.search(org) > 0]
+        print "alma base search ended"
         author="default"
         try:
             author=a.author[0]
