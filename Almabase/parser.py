@@ -24,6 +24,26 @@ class Parser_Classifier(threading.Thread):
         self.classifier = classifier
         self.url = url
 
+    def get_all_person(self,t):
+        l = []
+        if hasattr(t, 'node') and t.node:
+            if t.node == 'PERSON':
+                l.append(" ".join([child[0] for child in t]))
+            else:
+                for child in t:
+                    l.extend(self.get_all_person(child))
+        return l
+
+    def get_all_organizations(self,t):
+        l = []
+        if hasattr(t, 'node') and t.node:
+            if t.node == 'ORGANIZATION':
+                l.append(" ".join([child[0] for child in t]))
+            else:
+                for child in t:
+                    l.extend(self.get_all_organizations(child))
+        return l
+
     def get_all_named(self, t):
         l = []
         if hasattr(t, 'node') and t.node:
@@ -38,21 +58,33 @@ class Parser_Classifier(threading.Thread):
         sentences = nltk.sent_tokenize(article_text)
         print len(sentences)
         named_list = set()
+        person_list = set()
+        org_list = set()
         for sent in sentences:
             words = nltk.word_tokenize(sent)
             tagged = nltk.pos_tag(words)
             namedent = nltk.ne_chunk(tagged, binary = True)
+            namedent2 = nltk.ne_chunk(tagged)
             named = self.get_all_named(namedent)
+            persons = self.get_all_person(namedent2)
+            orgs = self.get_all_organizations(namedent2)
             for name in named:
                 named_list.add(name)
-        return list(named_list)
+            for person in persons:
+                person_list.add(person)
+            for org in orgs:
+                org_list.add(org)
 
-    def add_article(self, title,summary,url,author,keywords1):
+        return list(named_list), list(person_list), org(org_list)
+
+    def add_article(self, title,summary,url,author,keywords1, persons, orgs):
         a=Article.objects.get_or_create(title=title,summary=summary,url=url,author=author)[0]
         a.save()
         article=a
         articleid=a.id
         a=Keywords.objects.get_or_create(article=a)[0]
+        b=PersonList.objects.get_or_create(article = article)[0]
+        c=OrganizationList.objects.get_or_create(article=article)[0]
         print a
         print a.keywords
         for key in keywords1:
@@ -61,6 +93,19 @@ class Parser_Classifier(threading.Thread):
             if not k.keywords_set.filter(id=a.id):
                 a.keywords.add(k)
                 a.save()
+        for person in persons:
+            k=Person.objects.get_or_create(name=person)[0]
+            k.save()
+            if not k.persons_set.filter(id=b.id):
+                b.keywords.add(k)
+                b.save()
+        for org in orgs:
+            k=Organization.objects.get_or_create(name=org)[0]
+            k.save()
+            if not k.orgs_set.filter(id=c.id):
+                c.keywords.add(k)
+                c.save()
+
         return article
 
 
@@ -91,13 +136,13 @@ class Parser_Classifier(threading.Thread):
         a.parse()
         a.nlp()
 
-        l1= self.get_named_entities(a.text)
+        named, persons, orgs= self.get_named_entities(a.text)
         author="default"
         try:
             author=a.author[0]
         except:
             print "Not found"
-        art=self.add_article(a.title,a.summary,url,author,l1)
+        art=self.add_article(a.title,a.summary,url,author,named, persons, orgs)
         # test_keywords(art,newsClassifier)
         return art
 
