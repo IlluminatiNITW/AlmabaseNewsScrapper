@@ -28,3 +28,26 @@ class Keywords(models.Model):
 		return self.article.title
     
 
+class Person(models.Model):
+	name = models.CharField(max_length= 100)
+	link = models.CharField(max_length=100, default="http://www.nitwaa.in/")
+	def __unicode__(self):
+		return self.name
+
+class PersonList(models.Model):
+	article=models.OneToOneField(Article)
+	persons=models.ManyToManyField(Person,blank=True)
+	def __unicode__(self):
+		return self.article.title
+
+class Organization(models.Model):
+	name = models.CharField(max_length= 100)
+	link = models.CharField(max_length=100, default="http://www.nitwaa.in/")
+	def __unicode__(self):
+		return self.name
+
+class OrganizationList(models.Model):
+	article=models.OneToOneField(Article)
+	orgs=models.ManyToManyField(Organization,blank=True)
+	def __unicode__(self):
+		return self.article.title
