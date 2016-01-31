@@ -3,7 +3,7 @@ from scrapy.http import Request
 from scrapy.spiders import BaseSpider
 import newspaper
 
-with open('foo.txt') as r:
+with open('footest.txt') as r:
     lines = r.readlines()
 
 from multiprocessing.connection import Listener
@@ -17,7 +17,7 @@ class DmozSpider(scrapy.Spider):
     start_urls=[]
     def __init__(self):
         super(DmozSpider, self).__init__()
-        address = ('localhost', 7002)     # family is deduced to be 'AF_INET'
+        address = ('localhost', 7003)     # family is deduced to be 'AF_INET'
         listener = Listener(address, authkey='secret password')
         self.conn = listener.accept()
         print "STarting server XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
