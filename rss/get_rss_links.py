@@ -16,10 +16,10 @@ for website_url in website_list:
     d = feedparser.parse(website_url)
 
     for post in d.entries:
-        fo.write(website_url+',')
+        fo.write(website_url+'#')
         print "Time Stamp : "
         print post.published
-        fo.write(post.published+',')
+        fo.write(post.published+'#')
         print "News Website url : "
         print post.summary_detail.base
         print "Article URL : "
