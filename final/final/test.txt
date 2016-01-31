@@ -1,2 +1,2 @@
-www.yourstory.com,http://yourstory.com/2016/01/yourstory-startup-sports-league/
-nitwarangal101.wordpress.com,https://nitwarangal101.wordpress.com/2015/04/07/directors-day-out-into-the-field/
+http://yourstory.com/2016/01/yourstory-startup-sports-league/
+https://nitwarangal101.wordpress.com/2015/04/07/directors-day-out-into-the-field/

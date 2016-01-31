@@ -3,8 +3,7 @@ from scrapy.http import Request
 from scrapy.spider import BaseSpider
 import newspaper
 
-with open('foo.txt') as r:
-    content = r.readlines()
+
 
 from multiprocessing.connection import Listener
 from array import array
@@ -17,15 +16,16 @@ class DmozSpider(scrapy.Spider):
     start_urls=[]
     def __init__(self):
         super(DmozSpider, self).__init__()
-        address = ('localhost', 7002)     # family is deduced to be 'AF_INET'
+        with open('test.txt') as r:
+            content = r.readlines()
+        address = ('localhost', 7003)     # family is deduced to be 'AF_INET'
         listener = Listener(address, authkey='secret password')
         self.conn = listener.accept()
         print "STarting server XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
         print 'connection accepted from', listener.last_accepted
-        for currentline in lines:
-            currentline=currentline.split(',')
-            self.allowed_domains.append(currentline[0])
-            self.start_urls.append(currentline[1])
+        for currentline in content:
+            # self.allowed_domains.append(currentline[0])
+            self.start_urls.append(currentline)
     def parse(self, response):
         # print self.allowed_domains
         print self.start_urls
