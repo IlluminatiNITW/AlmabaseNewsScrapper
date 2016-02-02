@@ -38,7 +38,7 @@
   </nav>
   <div class="section no-pad-bot" id="index-banner">
     <h1 class="header center blue-text">NIT Warangal</h1>
-    <h4 class="blue-text">Ferch Time:</h4>
+    <h4 class="blue-text">Last Fetched Time: {{dtime}}</h4>
     <hr>
 
     <section id="content">
@@ -64,30 +64,30 @@
       </div>
       <div class="container">
         <div class="row section">
+        {%for article in articles %}
           <div class="col s12 m6 l6">
             <div class="card large">
               <div class="card-image">
-                <img src="http://almabase.com/media/updates/Roosevelt_High_school.png" alt="sample">
-                <span class="card-title">Card Title</span>
+                <img src="{{article.image_link}}" alt="sample">
+                <span class="card-title white black-text">{{article.title}}</span>
               </div>
               <div class="card-content">
-                <p>I am a very simple card. I am good at containing small bits of information. I am convenient because I require little markup to use effectively.I am a very simple card. I am good at containing small bits of information. I am convenient because I require little markup to use effectively.</p>
+                <p>{{article.summary}}</p>
                 
               </div>
-                <p>tags:</p>
-                <br>
                 
               <div class="card-action">
-                <span class=" white-text blue lighten-1 waves-effect waves-light chip">test</span>
-                 <span class=" white-text blue lighten-1 waves-effect waves-light chip">test</span>
+              {%for person in article.personlist.persons.all %}
+                <span class=" white-text blue lighten-1 waves-effect waves-light chip">{{person.name}}</span>
+              {%endfor%}
                  <br>
                  <hr>
-                <a href="ui-cards.html#">This is a link</a>
-                <a href="ui-cards.html#">This is a link</a>
-               
+                <a href="{{article.url}}">Read Full Article</a>
+                {# <a href="ui-cards.html#">This is a link</a> #}
               </div>
             </div>
           </div>
+          {%endfor%}
         </div>
       </div>
 

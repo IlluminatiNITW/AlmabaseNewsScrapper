@@ -5,6 +5,7 @@ import django
 import newspaper
 import unicodedata
 import nltk
+import alma
 
 django.setup()
 
@@ -59,7 +60,7 @@ def get_named_entities(article_text):
             person_list.add(person)
         for org in orgs:
             org_list.add(org)
-        return list(named_list), list(person_list), list(org_list)
+    return list(named_list), list(person_list), list(org_list)
 
 def getkeywords(filename):
 	with open(filename) as f:
@@ -109,29 +110,35 @@ def add_article(title,summary,url,author, img_link ,keywords1, persons, orgs):
 
     return article
 
-def train(urls,keywords):
-	for url in urls:
-		a=newspaper.Article(url)
-		a.download()
-		a.parse()
-		a.nlp()
-        img_link = a.imgs[0]
-        named, persons, orgs= get_named_entities(a.text)
-        author="default"
-        try:
-            author=a.author[0]
-        except:
-            print "Not found"
-        art=add_article(a.title,a.summary,url,author,img_link, named, persons, orgs)
+def train(url,keywords):
+	# for url in urls:
+    a=newspaper.Article(url)
+    a.download()
+    a.parse()
+    a.nlp()
+    img_link = a.top_img
+    named, persons, orgs= get_named_entities(a.text)
+    print "alma base search started"
+    persons = [person for person in persons if alma.search(person) > 0]
+    orgs = [org for org in orgs if alma.search(org) > 0]
+    print "alma base search stoped"
+    author="default"
+    try:
+        author=a.author[0]
+    except:
+        print "Not found"
+    art=add_article(a.title,a.summary,url,author,img_link, named, persons, orgs)
         # test_keywords(art,newsClassifier)
-	return keywords
+    return keywords
 
 def populate():
-	print "Training the classifier....adding keywords"
-	url_list=['http://yourstory.com/2016/01/invest-karnataka-begaum-hubli-dharwad/','http://yourstory.com/2015/07/ameera-shah/','http://yourstory.com/2015/08/college-startups/']
-	keywords=KeywordList.objects.all().values_list('keyword',flat=True)
-	print keywords
-	keywords=train(url_list,keywords)
+    print "Training the classifier....adding keywords"
+    url_list=['http://yourstory.com/2016/01/invest-karnataka-begaum-hubli-dharwad/','http://yourstory.com/2015/07/ameera-shah/','http://yourstory.com/2015/08/college-startups/']
+    keywords=KeywordList.objects.all().values_list('keyword',flat=True)
+    print keywords
+    keywords=train(url_list[0],keywords)
+    keywords=train(url_list[1],keywords)
+    keywords=train(url_list[2],keywords)
 
 	
 

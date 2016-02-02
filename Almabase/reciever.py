@@ -43,7 +43,7 @@ def build_classifier():
 
 
 workQueue = Queue()
-address = ('localhost', 7002)
+address = ('localhost', 7003)
 
 class myThread(threading.Thread):
     def __init__(self, threadID, name,q):

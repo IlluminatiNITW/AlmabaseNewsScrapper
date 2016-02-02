@@ -11,6 +11,7 @@ from naiveBayesClassifier import tokenizer
 from naiveBayesClassifier.trainer import Trainer
 from naiveBayesClassifier.classifier import Classifier
 
+import alma
 
 django.setup()
 from Classifer.models import *
@@ -75,11 +76,11 @@ class Parser_Classifier(threading.Thread):
             for org in orgs:
                 org_list.add(org)
 
-        return list(named_list), list(person_list), org(org_list)
+        return list(named_list), list(person_list), list(org_list)
 
 
     def add_article(self, title,summary,url,author, img_link ,keywords1, persons, orgs):
-        a=Article.objects.get_or_create(title=title,summary=summary,url=url,author=author, img_link = img_link)[0]
+        a=Article.objects.get_or_create(title=title,summary=summary,url=url,author=author, image_link = img_link)[0]
         a.save()
         article=a
         articleid=a.id
@@ -97,14 +98,14 @@ class Parser_Classifier(threading.Thread):
         for person in persons:
             k=Person.objects.get_or_create(name=person)[0]
             k.save()
-            if not k.persons_set.filter(id=b.id):
-                b.keywords.add(k)
+            if not k.personlist_set.filter(id=b.id):
+                b.persons.add(k)
                 b.save()
         for org in orgs:
             k=Organization.objects.get_or_create(name=org)[0]
             k.save()
-            if not k.orgs_set.filter(id=c.id):
-                c.keywords.add(k)
+            if not k.organizationlist_set.filter(id=c.id):
+                c.orgs.add(k)
                 c.save()
 
         return article
@@ -136,8 +137,12 @@ class Parser_Classifier(threading.Thread):
         a.html = response_body
         a.parse()
         a.nlp()
-        img_link = a.imgs[0]
+        img_link = a.top_img
         named, persons, orgs= self.get_named_entities(a.text)
+        print "alma base search started"
+        persons = [person for person in persons if alma.search(person) > 0]
+        orgs = [org for org in orgs if alma.search(org) > 0]
+        print "alma base search ended"
         author="default"
         try:
             author=a.author[0]

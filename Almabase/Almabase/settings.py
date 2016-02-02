@@ -80,8 +80,8 @@ DATABASES = {
         'ENGINE':'django.db.backends.mysql',
         'NAME': 'ALMA',
         'USER': 'root',
-        'PASSWORD': 'toor',
-        'HOST': 'localhost',
+        'PASSWORD': '',
+        'HOST': '127.0.0.1',
     }
 }
 
