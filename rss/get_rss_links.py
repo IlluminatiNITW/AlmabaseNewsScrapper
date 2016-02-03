@@ -17,28 +17,31 @@ print website_list
 website_list.pop()
 
 fo = open("../final/foo.txt", "wb")
-#website_url = "http://yourstory.com/feed/"
-for website_url in website_list:
+website_url = "https://nitwarangal101.wordpress.com/comments/feed/"
+# for website_url in website_list:
 
-    d = feedparser.parse(website_url)
+d = feedparser.parse(website_url)
+print d
 
-    for post in d.entries:
-        # fo.write(website_url+',')
-        print "Time Stamp : "
-        print post.published
-        #fo.write(post.published+'#')
-        print "News Website url : "
-        print post.summary_detail.base
-        print "Article URL : "
-        link = post[configs[website_url]["link"]]
-        print link
-        fo.write(link)
-        fo.write("\n")
-        print "Article Title : "
-        print post.title
-        print "Article Content : "
-        print post.summary_detail.value
-        print "____________________________________________________"
+for post in d.entries:
+    # fo.write(website_url+',')
+    print post
+    print "Time Stamp : "
+    print post.published
+    print post.feed.updated
+    #fo.write(post.published+'#')
+    print "News Website url : "
+    # print post.summary_detail.base
+    # print "Article URL : "
+    # link = post[configs[website_url]["link"]]
+    # print link
+    # fo.write(link)
+    # fo.write("\n")
+    # print "Article Title : "
+    # print post.title
+    # print "Article Content : "
+    # print post.summary_detail.value
+    print "____________________________________________________"
       
 fo.close()
 

@@ -3,7 +3,7 @@ from scrapy.http import Request
 from scrapy.spiders import BaseSpider
 import newspaper
 
-with open('footest.txt') as r:
+with open('foo.txt') as r:
     lines = r.readlines()
 
 from multiprocessing.connection import Listener

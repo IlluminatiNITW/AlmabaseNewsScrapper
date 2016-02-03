@@ -68,7 +68,7 @@
           <div class="col s12 m6 l6">
             <div class="card large">
               <div class="card-image">
-                <img src="{{article.image_link}}" alt="sample">
+                <img src="{{article.image_link}}" alt="sample" style="width:100%;height:auto;">
                 <span class="card-title white black-text">{{article.title}}</span>
               </div>
               <div class="card-content">
@@ -77,8 +77,11 @@
               </div>
                 
               <div class="card-action">
-              {%for person in article.personlist.persons.all %}
+              {%for person in article.personlist.persons.all|slice:":3" %}
                 <span class=" white-text blue lighten-1 waves-effect waves-light chip">{{person.name}}</span>
+              {%endfor%}
+              {%for org in article.organizationlist.orgs.all|slice:":3" %}
+                <span class=" white-text green lighten-1 waves-effect waves-light chip">{{org.name}}</span>
               {%endfor%}
                  <br>
                  <hr>
