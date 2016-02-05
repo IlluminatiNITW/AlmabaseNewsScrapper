@@ -31,5 +31,3 @@ print d.headers
 
 #Just get the content-type from the header\
 print d.headers.get('content-type')
-
-http://yourstory.com/feed/,https://news.ycombinator.com/rss,

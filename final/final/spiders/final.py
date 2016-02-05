@@ -20,7 +20,7 @@ class DmozSpider(scrapy.Spider):
         address = ('localhost', 7003)     # family is deduced to be 'AF_INET'
         listener = Listener(address, authkey='secret password')
         self.conn = listener.accept()
-        print "STarting server XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+        print "Starting server......."
         print 'connection accepted from', listener.last_accepted
         for currentline in lines:
             # currentline=currentline.split(',')

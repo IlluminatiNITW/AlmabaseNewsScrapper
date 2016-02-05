@@ -1,3 +1,4 @@
+#Map the appropriate rss tags to common keywords 
 configs ={
 	"https://news.ycombinator.com/rss":{
 	"link":"link"
