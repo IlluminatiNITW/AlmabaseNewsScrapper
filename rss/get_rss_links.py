@@ -27,6 +27,7 @@ with open('sites.txt') as r:
 with open('date.txt') as r:
     date = r.readlines()
 #Reading last fetched date
+print "date", date
 if len(date) == 0:
     date=""
 else:

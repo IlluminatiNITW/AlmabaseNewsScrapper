@@ -2,6 +2,8 @@ import scrapy
 from scrapy.http import Request
 from scrapy.spiders import BaseSpider
 import newspaper
+from scrapy import signals
+from scrapy.xlib.pydispatch import dispatcher
 
 with open('foo.txt') as r:
     lines = r.readlines()
@@ -17,6 +19,7 @@ class DmozSpider(scrapy.Spider):
     start_urls=[]
     def __init__(self):
         super(DmozSpider, self).__init__()
+        dispatcher.connect(self.spider_closed, signals.spider_closed)
         address = ('localhost', 7003)     # family is deduced to be 'AF_INET'
         listener = Listener(address, authkey='secret password')
         self.conn = listener.accept()
@@ -36,3 +39,8 @@ class DmozSpider(scrapy.Spider):
         # with open(filename, 'wb') as f:
         #     f.write(response.body)
         # currentline=r.readline().split(",")
+
+    def spider_closed(self, spider):
+        print "___________________________________________________________________________________"
+        self.conn.send(["exit","exit"])
+        self.conn.close()
