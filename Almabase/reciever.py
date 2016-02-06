@@ -1,3 +1,13 @@
+'''
+=============================================================================
+The Classifer
+=============================================================================
+
+This is the classifier. It connects with the server and classifies the
+articles.
+Go to parser.py for more info on the parsing functions
+'''
+
 from parser import *
 import requests
 import os

@@ -1,3 +1,11 @@
+'''
+=====================================================
+Parser
+=====================================================
+All the parsing functions are defined here.
+
+'''
+
 import threading
 import time
 import os
@@ -158,20 +166,5 @@ class Parser_Classifier(threading.Thread):
 
     def run(self):
         print "Starting thread...", 
-        # labeled_articles = [(a, a.relevant) for a in Article.objects.all()[:(len(Article.objects.all()))]]
-        # print labeled_articles
-        # featuresets=[]
-        # for (article, relevant) in labeled_articles:
-        #   r=article_keywords(article)
-        #   featuresets.append((r,relevant))
-        # print featuresets
-        # train_set, test_set = featuresets[:(len(featuresets))], featuresets[(len(featuresets)-2):]
-        # print train_set
-        # newsTrainer = Trainer(tokenizer)
-        # for f in train_set:
-        #     newsTrainer.train(f[0]['keyword'],f[1])
-        # newsClassifier = Classifier(newsTrainer.data, tokenizer)
-        # url=raw_input("Enter the url: ")
-
         added_article = self.parse_add(self.url, self.response_body)
         self.classify(added_article, self.classifier)
