@@ -18,8 +18,10 @@ from django.conf.urls import include,url
 from django.contrib import admin
 from django.conf.urls.static import static
 from django.conf import settings
+from Classifer import views
 
 urlpatterns = [
+    url(r'^$',views.homeview),
     url(r'^admin/', admin.site.urls),
     url(r'^index/', include('Classifer.urls')),
 ]
