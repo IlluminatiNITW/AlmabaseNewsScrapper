@@ -15,3 +15,7 @@ Build.sh will run the article scraping and modifying. Once done, it will termina
 This script can be put as a cron job.
 
 You can check out the articles by running the Django server in ```Almabase``` as ```python manage.py runserver``` and navigating to ```BASEURL/index/showcollege```
+
+##Architecture
+
+**FeedParser**(scrape RSS) -> **Scrapy**(Scrape webpages) -> **Newspaper**(Parse html) ->  **NaiveBayesClassifier**(to classify the article)
